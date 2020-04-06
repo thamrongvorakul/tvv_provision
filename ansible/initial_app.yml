@@ -1,7 +1,16 @@
+- hosts: db
+  roles:
+    - voloumn_mount
+    - docker
+    - docker_mongodb
+  vars:
+    volume_mounts:
+      - {'device': "{{ db_data_device | default('/dev/nvme1n1') }}", 'path': '/data', 'fstype': 'xfs'}
+
 - hosts: app
   roles:
     - docker
     - app
   vars:
-    - db_url: "mongodb://{{ db_private_ip }}:27017/test"
-    - port: 3000
+    db_url: "mongodb://{{ db_private_ip }}:27017/test"
+    port: 3000
