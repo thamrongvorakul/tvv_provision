@@ -26,7 +26,7 @@ bash terraform_apply tvv
 - To initial mongoDB on DB Instance with Docker
 
 ### How to execute the Ansible
-1. cd to terraform/production directory 
+1. cd to ansible directory 
 2. for running the playbook, run the command below
 ```sh
 bash workspace_ansible_playbook production tvv initial_app.yml
