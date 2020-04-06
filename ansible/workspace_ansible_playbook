@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -xe
+[ -z "$2" ] && echo "Usage: ./workspace_ansible_playbook <terraform-project> <workspace> <playbook.yml>" && exit 1
+
+# get terraform state from remote storage and select workspace
+pushd ../terraform/"$1"
+shift
+WORKSPACE=$1
+shift
+[ `terraform workspace show` != "$WORKSPACE" ] && terraform workspace select "$WORKSPACE"
+terraform state pull > terraform.tfstate
+export TF_STATE="$(pwd)/terraform.tfstate"
+
+EXTRA_VARS="$(terraform output | sed 's/ = /=/g' | tr '\n' ' ')"
+popd
+
+PLAYBOOK="$1"
+shift
+
+
+ansible-playbook -i `which terraform-inventory` "$PLAYBOOK" --extra-vars "$EXTRA_VARS" "$@" 

@@ -1,0 +1,7 @@
+#!/bin/bash
+set -xe
+
+WORKSPACE="$1"
+shift
+[ `terraform workspace show` != "$WORKSPACE" ] && terraform workspace select "$WORKSPACE"
+terraform apply -var-file=vars/"$WORKSPACE".tfvars "$@"

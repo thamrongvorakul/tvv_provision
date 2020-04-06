@@ -1,0 +1,14 @@
+- name: create dir for mongodb
+  file:
+    path: "{{ mongodb_path }}"
+    state: directory
+
+- name: copy docker-compose
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ mongodb_path }}/docker-compose.yml"
+
+- name: start mongodb
+  docker_service:
+    project_src: "{{ mongodb_path }}"
+    pull: yes

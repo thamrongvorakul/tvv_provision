@@ -1,0 +1,29 @@
+- name: install mkfs dependencies
+  apt:
+    name: xfsprogs
+  become: yes
+
+- name: ensure mount path exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+  with_items: "{{ volume_mounts }}"
+  become: yes
+
+- name: mkfs
+  filesystem:
+    fstype: "{{ item.fstype }}"
+    dev: "{{ item.device }}"
+    resizefs: true
+  with_items: "{{ volume_mounts }}"
+  become: yes
+
+- name: "mount volume"
+  mount:
+    path: "{{ item.path }}"
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+    opts: defaults,nofail
+  with_items: "{{ volume_mounts }}"
+  become: yes

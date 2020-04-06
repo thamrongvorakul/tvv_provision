@@ -1,0 +1,34 @@
+- name: create dir for app
+  file:
+    path: "{{ app_project_path }}"
+    state: directory
+
+- name: copy .env_Vars
+  template:
+    src: "env.j2"
+    dest: "{{ app_project_path }}/.env_vars"
+
+- name: copy docker-compose
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ app_project_path }}/docker-compose.yml"
+
+- name: start app
+  docker_service:
+    project_src: "{{ app_project_path }}"
+    pull: yes
+
+- name: copy nginx conf
+  template:
+    src: nginx-app.conf.j2
+    dest: /etc/nginx/sites-available/app.conf
+  notify: reload nginx
+  become: yes
+
+- name: create symlink to sites-enabled
+  file:
+    src: /etc/nginx/sites-available/app.conf
+    dest: /etc/nginx/sites-enabled/app.conf
+    state: link
+  notify: reload nginx
+  become: yes

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  app:
+    image: registry.gitlab.com/thamrongvorakul/demo-nodejs-mongodb-rest/develop:latest
+    command: npm start
+    restart: unless-stopped
+    env_file: .env_vars
+    ports:
+      - 3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "1"

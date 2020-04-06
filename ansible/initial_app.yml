@@ -1,0 +1,7 @@
+- hosts: app
+  roles:
+    - docker
+    - app
+  vars:
+    - db_url: "mongodb://{{ db_private_ip }}:27017/test"
+    - port: 3000

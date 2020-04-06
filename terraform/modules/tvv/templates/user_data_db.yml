@@ -1,0 +1,13 @@
+#cloud-config
+hostname: ${customer}-db
+manage_etc_hosts: localhost
+swap:
+  filename: /swapfile
+  size: "auto"
+  maxsize: 4000000000
+growpart:
+  mode: auto
+  devices: ['/', '/dev/xvdf']
+  ignore_growroot_disabled: false
+runcmd:
+  - xfs_growfs /dev/xvdf

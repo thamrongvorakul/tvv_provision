@@ -1,0 +1,28 @@
+- name: Insert worker openfile limits of nginx
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    line: 'worker_rlimit_nofile 50000;'
+    insertafter: .*pid
+  become: yes
+
+- name: changes worker_connections of nginx
+  lineinfile:
+    dest: "{{ item.dest }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  with_items:
+    - {dest: '/etc/nginx/nginx.conf', regexp: 'worker_connections', line: '        worker_connections 40000;'}
+  become: yes
+
+- name: check config nginx
+  command: nginx -t
+  become: yes
+  register: successful
+
+- name: reload config nginx
+  command: nginx -s reload
+  become: yes
+  when: item not in successful.stdout or item not in successful.stdlines
+  with_items:
+      - test is successful

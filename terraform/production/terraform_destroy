@@ -1,0 +1,7 @@
+#!/bin/bash
+set -xe
+
+FREQUENCY="$1"
+shift
+[ `terraform workspace show` != "$FREQUENCY" ] && terraform workspace select "$FREQUENCY"
+terraform destroy -var-file=vars/"$FREQUENCY".tfvars "$@"
